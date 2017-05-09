@@ -1,48 +1,39 @@
 const path = require('path');
-const Spider = require('./spider.js');
-const PinyinSpider = require('./pinyin-spider');
 
-// //股票
-// const stockUrl = 'http://www.cninfo.com.cn/cninfo-new/information/companylist';
-// const stockRawPath = path.join(__dirname,'./data-pool/stock.html');
-// const stockCleanPath = path.join(__dirname,'./data-clean/stock.json');
-// const stockSpider = new Spider(stockUrl,stockRawPath,stockCleanPath);
-// stockSpider.run();
+const Cnspider = require('./src/cninfo-spider.js');
 
-// //基金
-// const fundUrl = 'http://www.cninfo.com.cn/cninfo-new/information/fundlist';
-// const fundRawPath = path.join(__dirname,'./data-pool/fund.html');
-// const fundCleanPath = path.join(__dirname,'./data-clean/fund.json');
-// const fundSpider = new Spider(fundUrl,fundRawPath,fundCleanPath);
-// fundSpider.run();
 
-// //债券
-// const bondUrl = 'http://www.cninfo.com.cn/cninfo-new/information/bondlist';
-// const bondRawPath = path.join(__dirname,'./data-pool/bond.html');
-// const bondCleanPath = path.join(__dirname,'./data-clean/bond.json');
-// const bondSpider = new Spider(bondUrl,bondRawPath,bondCleanPath);
-// bondSpider.run();
+const cnspider = new Cnspider({
+    stockUrl: 'http://www.cninfo.com.cn/cninfo-new/information/companylist',
+    fundUrl: 'http://www.cninfo.com.cn/cninfo-new/information/fundlist',
+    bondUrl: 'http://www.cninfo.com.cn/cninfo-new/information/bondlist',
+    pinyinQueryUrl: 'http://www.cninfo.com.cn/cninfo-new/information/topSearch/query',
+    //以下三个参数是针对抓取拼音设置的
+    //每100ms抓取一次，每连续抓取8个拼音就休息5000ms
+    //经测试，实际抓取中三个参数配置 100 100 30000比较合理
+    tick: 100,
+    numEveryTime: 8,
+    rest: 5000,
+});
 
-// // 股票 拼音
-// const pinyinUrl = 'http://www.cninfo.com.cn/cninfo-new/information/topSearch/query';
-// const cleanStock = path.join(__dirname, './data-clean/stock.json');
-// const pinyinStock = path.join(__dirname, './data-pinyin/stock-pinyin.json');
-// const log = path.join(__dirname, './log/pinyin.log');
-// const pySpider = new PinyinSpider(pinyinUrl, cleanStock, pinyinStock, log);
-// pySpider.run();
+// cnspider.getContent(()=>{
+//     console.log('三个文件抓取完成');
+// });
 
-// // 基金 拼音
-// const pinyinUrl = 'http://www.cninfo.com.cn/cninfo-new/information/topSearch/query';
-// const cleanFund = path.join(__dirname, './data-clean/fund.json');
-// const pinyinFund = path.join(__dirname, './data-pinyin/fund-pinyin.json');
-// const log = path.join(__dirname, './log/pinyin.log');
-// const pyFundSpider = new PinyinSpider(pinyinUrl, cleanFund, pinyinFund, log);
-// pyFundSpider.run();
+// cnspider.cleanData(()=>{
+//     console.log('三个文件清洗完成');
+// });
 
-// 债券 拼音
-const pinyinUrl = 'http://www.cninfo.com.cn/cninfo-new/information/topSearch/query';
-const cleanBond = path.join(__dirname, './data-clean/bond.json');
-const pinyinBond = path.join(__dirname, './data-pinyin/bond-pinyin.json');
-const log = path.join(__dirname, './log/pinyin.log');
-const pyBondSpider = new PinyinSpider(pinyinUrl, cleanBond, pinyinBond, log);
-pyBondSpider.run();
+// cnspider.getPinyin(()=>{
+//     console.log('三个文件都拿到拼音');
+// });
+
+// cnspider.simplefy(()=>{
+//     console.log('三个拼音文件轻量化完成');
+// });
+
+// cnspider.run();
+
+// Cnspider.compareJsonFiles('../spider/data-clean/stock.json', './data/data-clean/stock.json');
+// Cnspider.compareJsonFiles('../spider/data-clean/fund.json', './data/data-clean/fund.json');
+// Cnspider.compareJsonFiles('../spider/data-clean/bond.json', './data/data-clean/bond.json');
