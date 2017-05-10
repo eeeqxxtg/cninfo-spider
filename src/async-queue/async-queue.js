@@ -22,8 +22,14 @@ class AsyncQueue {
         this.wait = false;
         //任务队列
         this.queue = [];
+
+        this.start = null;
+
+        //启动异步队列
+        this.boot();
+
     }
-    //将异步操作序列化
+        //将异步操作序列化
     serialize(asyncFn) {
         return (...rest) => {
             //最后一个参数是callback
@@ -44,42 +50,45 @@ class AsyncQueue {
                 });
             });
 
-            //setInterval 监视
-            clearInterval(this.timer);
-            this.timer = setInterval(() => {
-                if (this.queue.length) {
-                    //上次任务完成了
-                    if (!this.wait) {
-                        //每次执行this.numEveryTime个任务， 然后休息 this.rest毫秒 
-                        // if (this.number % (parseInt(this.rest / this.tick) + this.numEveryTime) < this.numEveryTime) {
-                        //     this.queue.shift()();
-                        // }
-                        // this.number++;
+        }
+    }
 
-                        if (this.start && (new Date() - this.start) > this.rest) {
-                            this.start = null;
-                        }
-                        if (!this.start) {
-                            this.queue.shift()();
-                            this.number++;
-                        }
-                        if (this.number && this.number % this.numEveryTime === 0) {
-                            this.start = new Date();
-                            this.number = 0;
-                        }
+    //启动异步队列
+    boot() {
+        //setInterval 监视
+        clearInterval(this.timer);
+        this.timer = setInterval(() => {
+            if (this.queue.length) {
+                //上次任务完成了
+                if (!this.wait) {
+                    //每次执行this.numEveryTime个任务， 然后休息 this.rest毫秒 
+                    // if (this.number % (parseInt(this.rest / this.tick) + this.numEveryTime) < this.numEveryTime) {
+                    //     this.queue.shift()();
+                    // }
+                    // this.number++;
+
+                    if (this.start && (new Date() - this.start) > this.rest) {
+                        this.start = null;
                     }
-                } else {
-                    //最后一次任务完成了
-                    if (!this.wait) {
-                        //关闭计时器
-                        clearInterval(this.timer);
-                        //回调函数
-                        this.finalFn && this.finalFn();
+                    if (!this.start) {
+                        this.queue.shift()();
+                        this.number++;
+                    }
+                    if (this.number && this.number % this.numEveryTime === 0) {
+                        this.start = new Date();
+                        this.number = 0;
                     }
                 }
-            }, this.tick);
-        }
-
+            } else {
+                //最后一次任务完成了
+                if (!this.wait) {
+                    //关闭计时器
+                    clearInterval(this.timer);
+                    //回调函数
+                    this.finalFn && this.finalFn();
+                }
+            }
+        }, this.tick);
     }
 }
 

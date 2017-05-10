@@ -30,7 +30,13 @@ const getContentSerial = aq.serialize(getContent);
 const file = path.join(__dirname, './test.html');
 
 
-['第1', '第2', '第3', '第4', '第5', '第6', '第7', '第8', '第9', '第10'].forEach((v, k) => {
+// ['第1', '第2', '第3', '第4', '第5', '第6', '第7', '第8', '第9', '第10'].forEach((v, k) => {
+//     getContentSerial(file, (data) => {
+//         console.log(data.length);//测试文件的长度 3668
+//         console.log(v);
+//     });
+// });
+[].forEach((v, k) => {
     getContentSerial(file, (data) => {
         console.log(data.length);//测试文件的长度 3668
         console.log(v);
